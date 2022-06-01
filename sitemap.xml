@@ -2,9 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.danherrera.dev/categories/</loc>
+    <loc>https://www.danherrera.dev/posts/200623-ktor-autoreload/</loc>
+    <lastmod>2020-06-23T17:31:45-04:00</lastmod>
   </url><url>
     <loc>https://www.danherrera.dev/</loc>
+    <lastmod>2020-06-23T17:31:45-04:00</lastmod>
+  </url><url>
+    <loc>https://www.danherrera.dev/posts/</loc>
+    <lastmod>2020-06-23T17:31:45-04:00</lastmod>
+  </url><url>
+    <loc>https://www.danherrera.dev/posts/191214-ledgercli-intro/</loc>
+    <lastmod>2019-12-14T17:31:45-04:00</lastmod>
+  </url><url>
+    <loc>https://www.danherrera.dev/posts/190619-commits-gpg/</loc>
+    <lastmod>2019-06-19T17:31:45-04:00</lastmod>
+  </url><url>
+    <loc>https://www.danherrera.dev/posts/190130-ghost-blog/</loc>
+    <lastmod>2019-01-30T17:31:45-04:00</lastmod>
+  </url><url>
+    <loc>https://www.danherrera.dev/categories/</loc>
   </url><url>
     <loc>https://www.danherrera.dev/tags/</loc>
   </url>
