@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
 <title>Reference: Signing Commits with GPG | Danilo Herrera</title>
-<meta name="keywords" content="">
+<meta name="keywords" content="gpg, git">
 <meta name="description" content="Creating a GPG Key Create a key with gpg --gen-key and input your name, email address, and passphrase when prompted. For more options, use gpg --full-generate-key.
 To view secret keys: gpg --list-secret-keys or gpg -K
 To export secret keys: gpg --export-secret-keys $ID &gt; private-key.asc
@@ -121,7 +121,7 @@ Using the GPG Key with Git In your git repo:"/>
   "name": "Reference: Signing Commits with GPG",
   "description": "Creating a GPG Key Create a key with gpg --gen-key and input your name, email address, and passphrase when prompted. For more options, use gpg --full-generate-key.\nTo view secret keys: gpg --list-secret-keys or gpg -K\nTo export secret keys: gpg --export-secret-keys $ID \u0026gt; private-key.asc\nTo export public key for sharing: gpg --armor --export $ID \u0026gt; public-key.asc or gpg --armor --export $EMAIL \u0026gt; public-key.asc\nUsing the GPG Key with Git In your git repo:",
   "keywords": [
-    
+    "gpg", "git"
   ],
   "articleBody": "Creating a GPG Key Create a key with gpg --gen-key and input your name, email address, and passphrase when prompted. For more options, use gpg --full-generate-key.\nTo view secret keys: gpg --list-secret-keys or gpg -K\nTo export secret keys: gpg --export-secret-keys $ID \u003e private-key.asc\nTo export public key for sharing: gpg --armor --export $ID \u003e public-key.asc or gpg --armor --export $EMAIL \u003e public-key.asc\nUsing the GPG Key with Git In your git repo:\ngit config user.signingkey $ID To sign a commit:\ngit commit -S -m \"Commit message\" To auto sign commits:\ngit config commit.gpgsign true To view commits with signature information:\ngit log --show-signature ",
   "wordCount" : "104",
@@ -245,6 +245,8 @@ Using the GPG Key with Git In your git repo:"/>
 
   <footer class="post-footer">
     <ul class="post-tags">
+      <li><a href="https://www.danherrera.dev/tags/gpg/">gpg</a></li>
+      <li><a href="https://www.danherrera.dev/tags/git/">git</a></li>
     </ul>
   </footer>
 </article>

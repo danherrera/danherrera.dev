@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>ledger cli on Danilo Herrera</title>
+    <link>https://www.danherrera.dev/tags/ledger-cli/</link>
+    <description>Recent content in ledger cli on Danilo Herrera</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 14 Dec 2019 17:31:45 -0400</lastBuildDate><atom:link href="https://www.danherrera.dev/tags/ledger-cli/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>An Introduction to Tracking Transactions with Ledger CLI</title>
+      <link>https://www.danherrera.dev/posts/191214-ledgercli-intro/</link>
+      <pubDate>Sat, 14 Dec 2019 17:31:45 -0400</pubDate>
+      
+      <guid>https://www.danherrera.dev/posts/191214-ledgercli-intro/</guid>
+      <description>Introduction Ledger CLI is an open source command line accounting tool used for calculating reports from a ledger (a file containing a list of transactions for different accounts). With Ledger CLI you are able to view a register (a list of transactions), balance of accounts, budget report, etc. In this post, I&amp;rsquo;ll be going over defining a basic ledger and calculating balance and register reports.
+Prerequisites Essential Ledger CLI Optional VS Code I know: a text editor for a command line tool?</description>
+    </item>
+    
+  </channel>
+</rss>

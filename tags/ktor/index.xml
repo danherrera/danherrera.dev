@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>ktor on Danilo Herrera</title>
+    <link>https://www.danherrera.dev/tags/ktor/</link>
+    <description>Recent content in ktor on Danilo Herrera</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 23 Jun 2020 17:31:45 -0400</lastBuildDate><atom:link href="https://www.danherrera.dev/tags/ktor/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Configuring Autoreload for Ktor</title>
+      <link>https://www.danherrera.dev/posts/200623-ktor-autoreload/</link>
+      <pubDate>Tue, 23 Jun 2020 17:31:45 -0400</pubDate>
+      
+      <guid>https://www.danherrera.dev/posts/200623-ktor-autoreload/</guid>
+      <description>In this post, we&amp;rsquo;ll be going over how to create a basic Ktor project and configuring it with autoreload, a feature that automatically rebuilds the code on file changes. Furthermore, we&amp;rsquo;ll explore two ways of building and running the application: via the command line and via the IDE.
+Creating a Ktor project Using the latest version of IntelliJ IDEA, ensure the latest Ktor plugin is installed.
+This plugin provides us with a convenient user interface to generate new Ktor projects.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>docker on Danilo Herrera</title>
+    <link>https://www.danherrera.dev/tags/docker/</link>
+    <description>Recent content in docker on Danilo Herrera</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 30 Jan 2019 17:31:45 -0400</lastBuildDate><atom:link href="https://www.danherrera.dev/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Setting up a Ghost blog on a VPS with Docker</title>
+      <link>https://www.danherrera.dev/posts/190130-ghost-blog/</link>
+      <pubDate>Wed, 30 Jan 2019 17:31:45 -0400</pubDate>
+      
+      <guid>https://www.danherrera.dev/posts/190130-ghost-blog/</guid>
+      <description>What better way to start out a tech blog than by writing out my process on how I set the blog up? By day, I am an Android developer, so this was a bit out of my comfort zone.
+Although I have set up a few Wordpress blogs, this was several years ago (pre-Docker), and I was never fond of the amount of effort required to make the aesthetics decent. Ghost looks nice out of the box, and they offer a (limited) selection of free themes.</description>
+    </item>
+    
+  </channel>
+</rss>

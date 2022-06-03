@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>gpg on Danilo Herrera</title>
+    <link>https://www.danherrera.dev/tags/gpg/</link>
+    <description>Recent content in gpg on Danilo Herrera</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 19 Jun 2019 17:31:45 -0400</lastBuildDate><atom:link href="https://www.danherrera.dev/tags/gpg/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reference: Signing Commits with GPG</title>
+      <link>https://www.danherrera.dev/posts/190619-commits-gpg/</link>
+      <pubDate>Wed, 19 Jun 2019 17:31:45 -0400</pubDate>
+      
+      <guid>https://www.danherrera.dev/posts/190619-commits-gpg/</guid>
+      <description>Creating a GPG Key Create a key with gpg --gen-key and input your name, email address, and passphrase when prompted. For more options, use gpg --full-generate-key.
+To view secret keys: gpg --list-secret-keys or gpg -K
+To export secret keys: gpg --export-secret-keys $ID &amp;gt; private-key.asc
+To export public key for sharing: gpg --armor --export $ID &amp;gt; public-key.asc or gpg --armor --export $EMAIL &amp;gt; public-key.asc
+Using the GPG Key with Git In your git repo:</description>
+    </item>
+    
+  </channel>
+</rss>
