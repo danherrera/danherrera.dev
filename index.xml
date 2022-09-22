@@ -6,7 +6,17 @@
     <description>Recent content on Danilo Herrera</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 23 Jun 2020 17:31:45 -0400</lastBuildDate><atom:link href="https://www.danherrera.dev/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 21 Sep 2022 01:00:00 -0400</lastBuildDate><atom:link href="https://www.danherrera.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Tracking Jira tickets with Dendron</title>
+      <link>https://www.danherrera.dev/posts/220921-dendron-checklists/</link>
+      <pubDate>Wed, 21 Sep 2022 01:00:00 -0400</pubDate>
+      
+      <guid>https://www.danherrera.dev/posts/220921-dendron-checklists/</guid>
+      <description>Dendron is an open source knowledge management tool that I have incorporated into my personal and professional life to capture knowledge, write journals, maintain to-do lists, etc. In this post, I describe one aspect of Dendron that I find particularly useful: leveraging the power of templates to automate the creation of checklists.
+Background Dendron is a VS Code extension and therefore all interaction is performed via VS Code. A Dendron project is called a vault.</description>
+    </item>
+    
     <item>
       <title>Configuring Autoreload for Ktor</title>
       <link>https://www.danherrera.dev/posts/200623-ktor-autoreload/</link>
@@ -25,7 +35,7 @@ This plugin provides us with a convenient user interface to generate new Ktor pr
       
       <guid>https://www.danherrera.dev/posts/191214-ledgercli-intro/</guid>
       <description>Introduction Ledger CLI is an open source command line accounting tool used for calculating reports from a ledger (a file containing a list of transactions for different accounts). With Ledger CLI you are able to view a register (a list of transactions), balance of accounts, budget report, etc. In this post, I&amp;rsquo;ll be going over defining a basic ledger and calculating balance and register reports.
-Prerequisites Essential Ledger CLI Optional VS Code I know: a text editor for a command line tool?</description>
+Prerequisites Essential  Ledger CLI  Optional  VS Code  I know: a text editor for a command line tool?</description>
     </item>
     
     <item>
