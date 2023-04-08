@@ -123,7 +123,7 @@ Using the GPG Key with Git In your git repo:"/>
   "keywords": [
     "gpg", "git"
   ],
-  "articleBody": "Creating a GPG Key Create a key with gpg --gen-key and input your name, email address, and passphrase when prompted. For more options, use gpg --full-generate-key.\nTo view secret keys: gpg --list-secret-keys or gpg -K\nTo export secret keys: gpg --export-secret-keys $ID  private-key.asc\nTo export public key for sharing: gpg --armor --export $ID  public-key.asc or gpg --armor --export $EMAIL  public-key.asc\nUsing the GPG Key with Git In your git repo:\ngit config user.signingkey $ID To sign a commit:\ngit commit -S -m \"Commit message\" To auto sign commits:\ngit config commit.gpgsign true To view commits with signature information:\ngit log --show-signature ",
+  "articleBody": "Creating a GPG Key Create a key with gpg --gen-key and input your name, email address, and passphrase when prompted. For more options, use gpg --full-generate-key.\nTo view secret keys: gpg --list-secret-keys or gpg -K\nTo export secret keys: gpg --export-secret-keys $ID \u003e private-key.asc\nTo export public key for sharing: gpg --armor --export $ID \u003e public-key.asc or gpg --armor --export $EMAIL \u003e public-key.asc\nUsing the GPG Key with Git In your git repo:\ngit config user.signingkey $ID To sign a commit:\ngit commit -S -m \"Commit message\" To auto sign commits:\ngit config commit.gpgsign true To view commits with signature information:\ngit log --show-signature ",
   "wordCount" : "104",
   "inLanguage": "en",
   "image":"https://www.danherrera.dev/190619-commits-gpg.png","datePublished": "2019-06-19T17:31:45-04:00",
@@ -232,14 +232,14 @@ Using the GPG Key with Git In your git repo:"/>
 <p>To export public key for sharing: <code>gpg --armor --export $ID &gt; public-key.asc</code> or <code>gpg --armor --export $EMAIL &gt; public-key.asc</code></p>
 <h2 id="using-the-gpg-key-with-git">Using the GPG Key with Git<a hidden class="anchor" aria-hidden="true" href="#using-the-gpg-key-with-git">#</a></h2>
 <p>In your git repo:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">git config user.signingkey $ID
-</code></pre></div><p>To sign a commit:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">git commit -S -m &#34;Commit message&#34;
-</code></pre></div><p>To auto sign commits:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">git config commit.gpgsign true
-</code></pre></div><p>To view commits with signature information:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">git log --show-signature
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>git config user.signingkey $ID
+</span></span></code></pre></div><p>To sign a commit:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>git commit -S -m &#34;Commit message&#34;
+</span></span></code></pre></div><p>To auto sign commits:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>git config commit.gpgsign true
+</span></span></code></pre></div><p>To view commits with signature information:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-txt" data-lang="txt"><span style="display:flex;"><span>git log --show-signature
+</span></span></code></pre></div>
 
   </div>
 

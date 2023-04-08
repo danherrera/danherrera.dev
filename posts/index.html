@@ -144,6 +144,24 @@ if (!doNotTrack) {
 
 <article class="post-entry"> 
 <figure class="entry-cover">
+        <img loading="lazy" srcset="https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy_hue571a42febe6d92c59a19a23b1e233de_117869_360x0_resize_box_3.png 360w ,https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy_hue571a42febe6d92c59a19a23b1e233de_117869_480x0_resize_box_3.png 480w ,https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy_hue571a42febe6d92c59a19a23b1e233de_117869_720x0_resize_box_3.png 720w ,https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy_hue571a42febe6d92c59a19a23b1e233de_117869_1080x0_resize_box_3.png 1080w ,https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy.png 1330w" 
+            sizes="(min-width: 768px) 720px, 100vw" src="https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy.png" alt="" 
+            width="1330" height="666">
+</figure>
+  <header class="entry-header">
+    <h2>Defining a Kotlin DSL for building nested hierarchies
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>One of the Kotlin programming language’s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:
+data class Author( val id: String, val firstName: String, val lastName: String, val books: List&lt;Book&gt; ) data class Book( val id: String, val title: String, val chapters: List&lt;Chapter&gt; ) data class Chapter( val id: String, val number: Int, val title: String ) The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-04-07 01:00:00 -0400 EDT'>April 7, 2023</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Danilo Herrera</footer>
+  <a class="entry-link" aria-label="post link to Defining a Kotlin DSL for building nested hierarchies" href="https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/"></a>
+</article>
+
+<article class="post-entry"> 
+<figure class="entry-cover">
         <img loading="lazy" srcset="https://www.danherrera.dev/posts/220921-dendron-checklists/220921-dendron-0_hu602ac08181a9657d6bf1e8e442316fa8_27651_360x0_resize_box_3.png 360w ,https://www.danherrera.dev/posts/220921-dendron-checklists/220921-dendron-0_hu602ac08181a9657d6bf1e8e442316fa8_27651_480x0_resize_box_3.png 480w ,https://www.danherrera.dev/posts/220921-dendron-checklists/220921-dendron-0.png 586w" 
             sizes="(min-width: 768px) 720px, 100vw" src="https://www.danherrera.dev/posts/220921-dendron-checklists/220921-dendron-0.png" alt="" 
             width="586" height="194">
@@ -191,7 +209,7 @@ This plugin provides us with a convenient user interface to generate new Ktor pr
   </header>
   <div class="entry-content">
     <p>Introduction Ledger CLI is an open source command line accounting tool used for calculating reports from a ledger (a file containing a list of transactions for different accounts). With Ledger CLI you are able to view a register (a list of transactions), balance of accounts, budget report, etc. In this post, I’ll be going over defining a basic ledger and calculating balance and register reports.
-Prerequisites Essential  Ledger CLI  Optional  VS Code  I know: a text editor for a command line tool?...</p>
+Prerequisites Essential Ledger CLI Optional VS Code I know: a text editor for a command line tool?...</p>
   </div>
   <footer class="entry-footer"><span title='2019-12-14 17:31:45 -0400 -0400'>December 14, 2019</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Danilo Herrera</footer>
   <a class="entry-link" aria-label="post link to An Introduction to Tracking Transactions with Ledger CLI" href="https://www.danherrera.dev/posts/191214-ledgercli-intro/"></a>

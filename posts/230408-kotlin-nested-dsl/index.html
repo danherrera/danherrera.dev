@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Defining a Kotlin DSL for building nested hierarchies | Danilo Herrera</title>
+<meta name="keywords" content="Kotlin, DSL, Domain Specific Language, nested, hierarchy">
+<meta name="description" content="One of the Kotlin programming language&rsquo;s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:
+data class Author( val id: String, val firstName: String, val lastName: String, val books: List&lt;Book&gt; ) data class Book( val id: String, val title: String, val chapters: List&lt;Chapter&gt; ) data class Chapter( val id: String, val number: Int, val title: String ) The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not.">
+<meta name="author" content="Danilo Herrera">
+<link rel="canonical" href="https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.1740750342264a4e69b84ddf6899fb02cc95465080d85c57c08bb1d110900bf6.css" integrity="sha256-F0B1A0ImSk5puE3faJn7AsyVRlCA2FxXwIux0RCQC/Y=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://www.danherrera.dev/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.danherrera.dev/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.danherrera.dev/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://www.danherrera.dev/apple-touch-icon.png">
+<link rel="mask-icon" href="https://www.danherrera.dev/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8J3TMSHJNL"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-8J3TMSHJNL', { 'anonymize_ip': false });
+}
+</script>
+<meta property="og:title" content="Defining a Kotlin DSL for building nested hierarchies" />
+<meta property="og:description" content="One of the Kotlin programming language&rsquo;s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:
+data class Author( val id: String, val firstName: String, val lastName: String, val books: List&lt;Book&gt; ) data class Book( val id: String, val title: String, val chapters: List&lt;Chapter&gt; ) data class Chapter( val id: String, val number: Int, val title: String ) The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/" />
+<meta property="og:image" content="https://www.danherrera.dev/author-hierarchy.png" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-04-07T01:00:00-04:00" />
+<meta property="article:modified_time" content="2023-04-07T01:00:00-04:00" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://www.danherrera.dev/author-hierarchy.png" />
+<meta name="twitter:title" content="Defining a Kotlin DSL for building nested hierarchies"/>
+<meta name="twitter:description" content="One of the Kotlin programming language&rsquo;s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:
+data class Author( val id: String, val firstName: String, val lastName: String, val books: List&lt;Book&gt; ) data class Book( val id: String, val title: String, val chapters: List&lt;Chapter&gt; ) data class Chapter( val id: String, val number: Int, val title: String ) The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://www.danherrera.dev/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Defining a Kotlin DSL for building nested hierarchies",
+      "item": "https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Defining a Kotlin DSL for building nested hierarchies",
+  "name": "Defining a Kotlin DSL for building nested hierarchies",
+  "description": "One of the Kotlin programming language\u0026rsquo;s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:\ndata class Author( val id: String, val firstName: String, val lastName: String, val books: List\u0026lt;Book\u0026gt; ) data class Book( val id: String, val title: String, val chapters: List\u0026lt;Chapter\u0026gt; ) data class Chapter( val id: String, val number: Int, val title: String ) The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not.",
+  "keywords": [
+    "Kotlin", "DSL", "Domain Specific Language", "nested", "hierarchy"
+  ],
+  "articleBody": "One of the Kotlin programming language’s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:\ndata class Author( val id: String, val firstName: String, val lastName: String, val books: List ) data class Book( val id: String, val title: String, val chapters: List ) data class Chapter( val id: String, val number: Int, val title: String ) The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not.\nKotlin default parameters One of the easiest and most straightforward ways to enable the creation of values in Kotlin is by defining functions with default values:\nfun author( id: String = UUID.randomUUID().toString(), firstName: String = \"\", lastName: String = \"\", books: List = emptyList(), ): Author = Author( id = id, firstName = firstName, lastName = lastName, books = books, ) fun book( id: String = UUID.randomUUID().toString(), title: String = \"\", chapters: List = emptyList(), ): Book = Book( id = id, title = title, chapters = chapters, ) fun chapter( id: String = UUID.randomUUID().toString(), number: Int = 0, title: String = \"\", ): Chapter = Chapter( id = id, number = number, title = title, ) With default parameters one can easily provide only the information that is available:\nval authors = listOf( author( firstName = \"John\", lastName = \"McIntosh\", books = listOf( book( title = \"Sunset\", chapters = listOf( chapter( number = 1, title = \"Afternoon\" ), chapter( number = 2, title = \"Evening\" ), ), ), book( title = \"Sunset 2: The Rise of the Moon\", ) ) ) ) Hierarchical DSL modeling The rest of the post will show how I modeled a DSL for creating authors, books, and chapters.\nTo begin, I needed a mechanism to create these objects and decided to abstract this concept with a simple Builder interface:\ninterface Builder { fun build(): T } The Builder implementations will provide the necessary fields specific to building an object. These properties are also mutable to allow the DSL to override them:\nclass ChapterBuilder : Builder { var id: String = UUID.randomUUID().toString() var number: Int = 0 var title: String = \"\" override fun build(): Chapter { return Chapter(id, number, title) } } Because Author and Book both have children components (Book and Chapter, respectively) I wanted a base component that handled the parent-child Builder interaction:\nabstract class BaseBuilderWithChildren",
+  "wordCount" : "801",
+  "inLanguage": "en",
+  "image":"https://www.danherrera.dev/author-hierarchy.png","datePublished": "2023-04-07T01:00:00-04:00",
+  "dateModified": "2023-04-07T01:00:00-04:00",
+  "author":{
+    "@type": "Person",
+    "name": "Danilo Herrera"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Danilo Herrera",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.danherrera.dev/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://www.danherrera.dev/" accesskey="h" title="Danilo Herrera (Alt + H)">Danilo Herrera</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      Defining a Kotlin DSL for building nested hierarchies
+    </h1>
+    <div class="post-meta"><span title='2023-04-07 01:00:00 -0400 EDT'>April 7, 2023</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Danilo Herrera&nbsp;|&nbsp;<a href="https://github.com/danherrera/danherrera.dev-hugo/edit/main/content/posts/230408-kotlin-nested-dsl/index.md" rel="noopener noreferrer" target="_blank">Edit</a>
+
+</div>
+  </header> 
+<figure class="entry-cover">
+        <img loading="lazy" srcset="https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy_hue571a42febe6d92c59a19a23b1e233de_117869_360x0_resize_box_3.png 360w ,https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy_hue571a42febe6d92c59a19a23b1e233de_117869_480x0_resize_box_3.png 480w ,https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy_hue571a42febe6d92c59a19a23b1e233de_117869_720x0_resize_box_3.png 720w ,https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy_hue571a42febe6d92c59a19a23b1e233de_117869_1080x0_resize_box_3.png 1080w ,https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy.png 1330w" 
+            sizes="(min-width: 768px) 720px, 100vw" src="https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/author-hierarchy.png" alt="" 
+            width="1330" height="666">
+        
+</figure><div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#kotlin-default-parameters" aria-label="Kotlin default parameters">Kotlin default parameters</a></li>
+                <li>
+                    <a href="#hierarchical-dsl-modeling" aria-label="Hierarchical DSL modeling">Hierarchical DSL modeling</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>One of the Kotlin programming language&rsquo;s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">data</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Author</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> id: String,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> firstName: String,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> lastName: String,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> books: List&lt;Book&gt;
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">data</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Book</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> id: String,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> title: String,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> chapters: List&lt;Chapter&gt;
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">data</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Chapter</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> id: String,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> number: Int,
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> title: String
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not.</p>
+<h2 id="kotlin-default-parameters">Kotlin default parameters<a hidden class="anchor" aria-hidden="true" href="#kotlin-default-parameters">#</a></h2>
+<p>One of the easiest and most straightforward ways to enable the creation of values in Kotlin is by defining functions with default values:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">author</span>(
+</span></span><span style="display:flex;"><span>    id: String = <span style="color:#a6e22e">UUID</span>.randomUUID().toString(),
+</span></span><span style="display:flex;"><span>    firstName: String = <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>    lastName: String = <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>    books: List&lt;Book&gt; = emptyList(),
+</span></span><span style="display:flex;"><span>): Author = Author(
+</span></span><span style="display:flex;"><span>    id = id,
+</span></span><span style="display:flex;"><span>    firstName = firstName,
+</span></span><span style="display:flex;"><span>    lastName = lastName,
+</span></span><span style="display:flex;"><span>    books = books,
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">book</span>(
+</span></span><span style="display:flex;"><span>    id: String = <span style="color:#a6e22e">UUID</span>.randomUUID().toString(),
+</span></span><span style="display:flex;"><span>    title: String = <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>    chapters: List&lt;Chapter&gt; = emptyList(),
+</span></span><span style="display:flex;"><span>): Book = Book(
+</span></span><span style="display:flex;"><span>    id = id,
+</span></span><span style="display:flex;"><span>    title = title,
+</span></span><span style="display:flex;"><span>    chapters = chapters,
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">chapter</span>(
+</span></span><span style="display:flex;"><span>    id: String = <span style="color:#a6e22e">UUID</span>.randomUUID().toString(),
+</span></span><span style="display:flex;"><span>    number: Int = <span style="color:#ae81ff">0</span>,
+</span></span><span style="display:flex;"><span>    title: String = <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>): Chapter = Chapter(
+</span></span><span style="display:flex;"><span>    id = id,
+</span></span><span style="display:flex;"><span>    number = number,
+</span></span><span style="display:flex;"><span>    title = title,
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><p>With default parameters one can easily provide only the information that is available:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> authors = listOf(
+</span></span><span style="display:flex;"><span>        author(
+</span></span><span style="display:flex;"><span>            firstName = <span style="color:#e6db74">&#34;John&#34;</span>,
+</span></span><span style="display:flex;"><span>            lastName = <span style="color:#e6db74">&#34;McIntosh&#34;</span>,
+</span></span><span style="display:flex;"><span>            books = listOf(
+</span></span><span style="display:flex;"><span>                book(
+</span></span><span style="display:flex;"><span>                    title = <span style="color:#e6db74">&#34;Sunset&#34;</span>,
+</span></span><span style="display:flex;"><span>                    chapters = listOf(
+</span></span><span style="display:flex;"><span>                        chapter(
+</span></span><span style="display:flex;"><span>                            number = <span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>                            title = <span style="color:#e6db74">&#34;Afternoon&#34;</span>
+</span></span><span style="display:flex;"><span>                        ),
+</span></span><span style="display:flex;"><span>                        chapter(
+</span></span><span style="display:flex;"><span>                            number = <span style="color:#ae81ff">2</span>,
+</span></span><span style="display:flex;"><span>                            title = <span style="color:#e6db74">&#34;Evening&#34;</span>
+</span></span><span style="display:flex;"><span>                        ),
+</span></span><span style="display:flex;"><span>                    ),
+</span></span><span style="display:flex;"><span>                ),
+</span></span><span style="display:flex;"><span>                book(
+</span></span><span style="display:flex;"><span>                    title = <span style="color:#e6db74">&#34;Sunset 2: The Rise of the Moon&#34;</span>,
+</span></span><span style="display:flex;"><span>                )
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>    )
+</span></span></code></pre></div><h2 id="hierarchical-dsl-modeling">Hierarchical DSL modeling<a hidden class="anchor" aria-hidden="true" href="#hierarchical-dsl-modeling">#</a></h2>
+<p>The rest of the post will show how I modeled a DSL for creating authors, books, and chapters.</p>
+<p>To begin, I needed a mechanism to create these objects and decided to abstract this concept with a simple <code>Builder</code> interface:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Builder</span>&lt;T&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">build</span>(): T
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The <code>Builder</code> implementations will provide the necessary fields specific to building an object. These properties are also mutable to allow the DSL to override them:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChapterBuilder</span> : Builder&lt;Chapter&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> id: String = <span style="color:#a6e22e">UUID</span>.randomUUID().toString()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> number: Int = <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> title: String = <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">build</span>(): Chapter {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Chapter(id, number, title)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Because <code>Author</code> and <code>Book</code> both have children components (<code>Book</code> and <code>Chapter</code>, respectively) I wanted a base component that handled the parent-child <code>Builder</code> interaction:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseBuilderWithChildren</span>&lt;Parent, Child, ChildBuilder : Builder&lt;Child&gt;&gt; : Builder&lt;Parent&gt; {
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">val</span> children = mutableListOf&lt;Child&gt;()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">child</span>(
+</span></span><span style="display:flex;"><span>        block: <span style="color:#a6e22e">ChildBuilder</span>.() <span style="color:#f92672">-&gt;</span> Unit,
+</span></span><span style="display:flex;"><span>        createChildBuilder: () <span style="color:#f92672">-&gt;</span> ChildBuilder
+</span></span><span style="display:flex;"><span>    ) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">val</span> builder = createChildBuilder()
+</span></span><span style="display:flex;"><span>        builder.block()
+</span></span><span style="display:flex;"><span>        children.add(builder.build())
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This base builder class requires the type of the parent (e.g. <code>Author</code>), the type of that type&rsquo;s child (e.g. <code>Book</code>) and the type of the child&rsquo;s <code>Builder</code> to facilitate the creation of the children objects via the <code>child</code> function. The <code>child</code> function could be part of the DSL, but I decided that I preferred explicit names such as <code>book</code> and <code>chapter</code> to define each object. As a result, the <code>AuthorBuilder</code> and <code>BookBuilder</code> classes must provide the name of the DSL function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BookBuilder</span> : BaseBuilderWithChildren&lt;Book, Chapter, ChapterBuilder&gt;({ ChapterBuilder() }) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> id: String = <span style="color:#a6e22e">UUID</span>.randomUUID().toString()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> title: String = <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> chapter = <span style="color:#f92672">::</span>child
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">build</span>(): Book {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Book(id, title, children)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AuthorBuilder</span> : BaseBuilderWithChildren&lt;Author, Book, BookBuilder&gt;({ BookBuilder() }) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> id: String = <span style="color:#a6e22e">UUID</span>.randomUUID().toString()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> firstName: String = <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> lastName: String = <span style="color:#e6db74">&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> book = <span style="color:#f92672">::</span>child
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">build</span>(): Author {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Author(id, firstName, lastName, children)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Additionally, because the goal is to create a list of authors, I created an additional <code>Builder</code> for a list of authors alongside an entry-point function:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AuthorListBuilder</span> : BaseBuilderWithChildren&lt;List&lt;Author&gt;, Author, AuthorBuilder&gt;({ AuthorBuilder() }) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> author = <span style="color:#f92672">::</span>child
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">build</span>(): List&lt;Author&gt; = children
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">createAuthors</span>(block: <span style="color:#a6e22e">AuthorListBuilder</span>.() <span style="color:#f92672">-&gt;</span> Unit): List&lt;Author&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> rootListBuilder = AuthorListBuilder()
+</span></span><span style="display:flex;"><span>    rootListBuilder.block()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> rootListBuilder.build()
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Altogether, these classes facilitate the following DSL:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> authors = createAuthors {
+</span></span><span style="display:flex;"><span>        author {
+</span></span><span style="display:flex;"><span>            firstName = <span style="color:#e6db74">&#34;John&#34;</span>
+</span></span><span style="display:flex;"><span>            lastName = <span style="color:#e6db74">&#34;McIntosh&#34;</span>
+</span></span><span style="display:flex;"><span>            book {
+</span></span><span style="display:flex;"><span>                title = <span style="color:#e6db74">&#34;Sunset&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                chapter {
+</span></span><span style="display:flex;"><span>                    number = <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>                    title = <span style="color:#e6db74">&#34;Afternoon&#34;</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>                chapter {
+</span></span><span style="display:flex;"><span>                    number = <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>                    title = <span style="color:#e6db74">&#34;Evening&#34;</span>
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>            book {
+</span></span><span style="display:flex;"><span>                title = <span style="color:#e6db74">&#34;Sunset 2: The Rise of the Moon&#34;</span>
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span></code></pre></div><p>Although the first approach using default function parameters is conceptually simpler to understand and faster to develop for simple models, the DSL approach provides more readable code due to the reduction of &ldquo;bloat&rdquo; (commas, <code>listOf</code> and parentheses).</p>
+<p>Thanks for reading!</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://www.danherrera.dev/tags/kotlin/">Kotlin</a></li>
+      <li><a href="https://www.danherrera.dev/tags/dsl/">DSL</a></li>
+      <li><a href="https://www.danherrera.dev/tags/domain-specific-language/">Domain Specific Language</a></li>
+      <li><a href="https://www.danherrera.dev/tags/nested/">nested</a></li>
+      <li><a href="https://www.danherrera.dev/tags/hierarchy/">hierarchy</a></li>
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://www.danherrera.dev/">Danilo Herrera</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

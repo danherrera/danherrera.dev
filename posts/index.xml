@@ -6,7 +6,17 @@
     <description>Recent content in Posts on Danilo Herrera</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 Sep 2022 01:00:00 -0400</lastBuildDate><atom:link href="https://www.danherrera.dev/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 07 Apr 2023 01:00:00 -0400</lastBuildDate><atom:link href="https://www.danherrera.dev/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Defining a Kotlin DSL for building nested hierarchies</title>
+      <link>https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/</link>
+      <pubDate>Fri, 07 Apr 2023 01:00:00 -0400</pubDate>
+      
+      <guid>https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/</guid>
+      <description>One of the Kotlin programming language&amp;rsquo;s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:
+data class Author( val id: String, val firstName: String, val lastName: String, val books: List&amp;lt;Book&amp;gt; ) data class Book( val id: String, val title: String, val chapters: List&amp;lt;Chapter&amp;gt; ) data class Chapter( val id: String, val number: Int, val title: String ) The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not.</description>
+    </item>
+    
     <item>
       <title>Tracking Jira tickets with Dendron</title>
       <link>https://www.danherrera.dev/posts/220921-dendron-checklists/</link>
@@ -35,7 +45,7 @@ This plugin provides us with a convenient user interface to generate new Ktor pr
       
       <guid>https://www.danherrera.dev/posts/191214-ledgercli-intro/</guid>
       <description>Introduction Ledger CLI is an open source command line accounting tool used for calculating reports from a ledger (a file containing a list of transactions for different accounts). With Ledger CLI you are able to view a register (a list of transactions), balance of accounts, budget report, etc. In this post, I&amp;rsquo;ll be going over defining a basic ledger and calculating balance and register reports.
-Prerequisites Essential  Ledger CLI  Optional  VS Code  I know: a text editor for a command line tool?</description>
+Prerequisites Essential Ledger CLI Optional VS Code I know: a text editor for a command line tool?</description>
     </item>
     
     <item>
