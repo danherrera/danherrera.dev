@@ -74,8 +74,8 @@ data class Author( val id: String, val firstName: String, val lastName: String, 
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://www.danherrera.dev/posts/230408-kotlin-nested-dsl/" />
 <meta property="og:image" content="https://www.danherrera.dev/author-hierarchy.png" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-04-07T01:00:00-04:00" />
-<meta property="article:modified_time" content="2023-04-07T01:00:00-04:00" />
+<meta property="article:published_time" content="2023-04-08T01:00:00-04:00" />
+<meta property="article:modified_time" content="2023-04-08T01:00:00-04:00" />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="https://www.danherrera.dev/author-hierarchy.png" />
@@ -117,8 +117,8 @@ data class Author( val id: String, val firstName: String, val lastName: String, 
   "articleBody": "One of the Kotlin programming language’s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:\ndata class Author( val id: String, val firstName: String, val lastName: String, val books: List ) data class Book( val id: String, val title: String, val chapters: List ) data class Chapter( val id: String, val number: Int, val title: String ) The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not.\nKotlin default parameters One of the easiest and most straightforward ways to enable the creation of values in Kotlin is by defining functions with default values:\nfun author( id: String = UUID.randomUUID().toString(), firstName: String = \"\", lastName: String = \"\", books: List = emptyList(), ): Author = Author( id = id, firstName = firstName, lastName = lastName, books = books, ) fun book( id: String = UUID.randomUUID().toString(), title: String = \"\", chapters: List = emptyList(), ): Book = Book( id = id, title = title, chapters = chapters, ) fun chapter( id: String = UUID.randomUUID().toString(), number: Int = 0, title: String = \"\", ): Chapter = Chapter( id = id, number = number, title = title, ) With default parameters one can easily provide only the information that is available:\nval authors = listOf( author( firstName = \"John\", lastName = \"McIntosh\", books = listOf( book( title = \"Sunset\", chapters = listOf( chapter( number = 1, title = \"Afternoon\" ), chapter( number = 2, title = \"Evening\" ), ), ), book( title = \"Sunset 2: The Rise of the Moon\", ) ) ) ) Hierarchical DSL modeling The rest of the post will show how I modeled a DSL for creating authors, books, and chapters.\nTo begin, I needed a mechanism to create these objects and decided to abstract this concept with a simple Builder interface:\ninterface Builder { fun build(): T } The Builder implementations will provide the necessary fields specific to building an object. These properties are also mutable to allow the DSL to override them:\nclass ChapterBuilder : Builder { var id: String = UUID.randomUUID().toString() var number: Int = 0 var title: String = \"\" override fun build(): Chapter { return Chapter(id, number, title) } } Because Author and Book both have children components (Book and Chapter, respectively) I wanted a base component that handled the parent-child Builder interaction:\nabstract class BaseBuilderWithChildren",
   "wordCount" : "801",
   "inLanguage": "en",
-  "image":"https://www.danherrera.dev/author-hierarchy.png","datePublished": "2023-04-07T01:00:00-04:00",
-  "dateModified": "2023-04-07T01:00:00-04:00",
+  "image":"https://www.danherrera.dev/author-hierarchy.png","datePublished": "2023-04-08T01:00:00-04:00",
+  "dateModified": "2023-04-08T01:00:00-04:00",
   "author":{
     "@type": "Person",
     "name": "Danilo Herrera"
@@ -190,7 +190,7 @@ data class Author( val id: String, val firstName: String, val lastName: String, 
     <h1 class="post-title">
       Defining a Kotlin DSL for building nested hierarchies
     </h1>
-    <div class="post-meta"><span title='2023-04-07 01:00:00 -0400 EDT'>April 7, 2023</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Danilo Herrera&nbsp;|&nbsp;<a href="https://github.com/danherrera/danherrera.dev-hugo/edit/main/content/posts/230408-kotlin-nested-dsl/index.md" rel="noopener noreferrer" target="_blank">Edit</a>
+    <div class="post-meta"><span title='2023-04-08 01:00:00 -0400 EDT'>April 8, 2023</span>&nbsp;·&nbsp;4 min&nbsp;·&nbsp;Danilo Herrera&nbsp;|&nbsp;<a href="https://github.com/danherrera/danherrera.dev-hugo/edit/main/content/posts/230408-kotlin-nested-dsl/index.md" rel="noopener noreferrer" target="_blank">Edit</a>
 
 </div>
   </header> 
