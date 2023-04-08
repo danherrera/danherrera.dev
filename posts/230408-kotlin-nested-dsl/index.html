@@ -354,9 +354,9 @@ data class Author( val id: String, val firstName: String, val lastName: String, 
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">createAuthors</span>(block: <span style="color:#a6e22e">AuthorListBuilder</span>.() <span style="color:#f92672">-&gt;</span> Unit): List&lt;Author&gt; {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> rootListBuilder = AuthorListBuilder()
-</span></span><span style="display:flex;"><span>    rootListBuilder.block()
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> rootListBuilder.build()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> authorListBuilder = AuthorListBuilder()
+</span></span><span style="display:flex;"><span>    authorListBuilder.block()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> authorListBuilder.build()
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Altogether, these classes facilitate the following DSL:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> authors = createAuthors {
