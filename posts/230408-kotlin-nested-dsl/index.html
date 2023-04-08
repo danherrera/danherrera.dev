@@ -114,8 +114,8 @@ data class Author( val id: String, val firstName: String, val lastName: String, 
   "keywords": [
     "Kotlin", "DSL", "Domain Specific Language", "nested", "hierarchy"
   ],
-  "articleBody": "One of the Kotlin programming language’s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:\ndata class Author( val id: String, val firstName: String, val lastName: String, val books: List ) data class Book( val id: String, val title: String, val chapters: List ) data class Chapter( val id: String, val number: Int, val title: String ) The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not.\nKotlin default parameters One of the easiest and most straightforward ways to enable the creation of values in Kotlin is by defining functions with default values:\nfun author( id: String = UUID.randomUUID().toString(), firstName: String = \"\", lastName: String = \"\", books: List = emptyList(), ): Author = Author( id = id, firstName = firstName, lastName = lastName, books = books, ) fun book( id: String = UUID.randomUUID().toString(), title: String = \"\", chapters: List = emptyList(), ): Book = Book( id = id, title = title, chapters = chapters, ) fun chapter( id: String = UUID.randomUUID().toString(), number: Int = 0, title: String = \"\", ): Chapter = Chapter( id = id, number = number, title = title, ) With default parameters one can easily provide only the information that is available:\nval authors = listOf( author( firstName = \"John\", lastName = \"McIntosh\", books = listOf( book( title = \"Sunset\", chapters = listOf( chapter( number = 1, title = \"Afternoon\" ), chapter( number = 2, title = \"Evening\" ), ), ), book( title = \"Sunset 2: The Rise of the Moon\", ) ) ) ) Hierarchical DSL modeling The rest of the post will show how I modeled a DSL for creating authors, books, and chapters.\nTo begin, I needed a mechanism to create these objects and decided to abstract this concept with a simple Builder interface:\ninterface Builder { fun build(): T } The Builder implementations will provide the necessary fields specific to building an object. These properties are also mutable to allow the DSL to override them:\nclass ChapterBuilder : Builder { var id: String = UUID.randomUUID().toString() var number: Int = 0 var title: String = \"\" override fun build(): Chapter { return Chapter(id, number, title) } } Because Author and Book both have children components (Book and Chapter, respectively) I wanted a base component that handled the parent-child Builder interaction:\nabstract class BaseBuilderWithChildren",
-  "wordCount" : "802",
+  "articleBody": "One of the Kotlin programming language’s strengths is the ability to easily define a language for a specific use case, or a domain-specific language (DSL). In this post, I will showcase how we can define a domain-specific language to create objects with nested hierarchies. Imagine that we have a list of authors and each author can have more than one book and each book consists of several chapters:\ndata class Author( val id: String, val firstName: String, val lastName: String, val books: List ) data class Book( val id: String, val title: String, val chapters: List ) data class Chapter( val id: String, val number: Int, val title: String ) The goal of this post is to be able to easily create these objects and only provide the information that is available and have defaults for the information that is not.\nKotlin default parameters One of the easiest and most straightforward ways to enable the creation of values in Kotlin is by defining functions with default values:\nfun author( id: String = UUID.randomUUID().toString(), firstName: String = \"\", lastName: String = \"\", books: List = emptyList(), ): Author = Author( id = id, firstName = firstName, lastName = lastName, books = books, ) fun book( id: String = UUID.randomUUID().toString(), title: String = \"\", chapters: List = emptyList(), ): Book = Book( id = id, title = title, chapters = chapters, ) fun chapter( id: String = UUID.randomUUID().toString(), number: Int = 0, title: String = \"\", ): Chapter = Chapter( id = id, number = number, title = title, ) With default parameters one can easily provide only the information that is available:\nval authors = listOf( author( firstName = \"John\", lastName = \"McIntosh\", books = listOf( book( title = \"Sunset\", chapters = listOf( chapter( number = 1, title = \"Afternoon\" ), chapter( number = 2, title = \"Evening\" ), ), ), book( title = \"Sunset 2: The Rise of the Moon\", ) ) ) ) Hierarchical DSL modeling The rest of the post will show how I modeled a DSL for creating authors, books, and chapters.\nTo begin, I needed a mechanism to create these objects and decided to abstract this concept with a simple Builder interface:\ninterface Builder { fun build(): T } The way the builders will be used is by passing them in a function as the receiver of the function (e.g. SomeBuilder.() -\u003e Unit). To simplify writing these functions, I defined a typealias:\ntypealias Dsl = B.() -\u003e Unit The Builder implementations will provide the necessary fields specific to building an object. These properties are also mutable to allow the DSL to override them:\nclass ChapterBuilder : Builder { var id: String = UUID.randomUUID().toString() var number: Int = 0 var title: String = \"\" override fun build(): Chapter { return Chapter(id, number, title) } } typealias ChapterDsl = Dsl Because Author and Book both have children components (Book and Chapter, respectively) I wanted a base component that handled the parent-child Builder interaction:\nabstract class BaseBuilderWithChildren",
+  "wordCount" : "847",
   "inLanguage": "en",
   "image":"https://www.danherrera.dev/author-hierarchy.png","datePublished": "2023-04-08T01:00:00-04:00",
   "dateModified": "2023-04-08T01:00:00-04:00",
@@ -300,6 +300,8 @@ data class Author( val id: String, val firstName: String, val lastName: String, 
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">Builder</span>&lt;T&gt; {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">build</span>(): T
 </span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>The way the builders will be used is by passing them in a function as the receiver of the function (e.g. <code>SomeBuilder.() -&gt; Unit</code>). To simplify writing these functions, I defined a <code>typealias</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">typealias</span> Dsl&lt;B&gt; = <span style="color:#a6e22e">B</span>.() <span style="color:#f92672">-&gt;</span> Unit
 </span></span></code></pre></div><p>The <code>Builder</code> implementations will provide the necessary fields specific to building an object. These properties are also mutable to allow the DSL to override them:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">ChapterBuilder</span> : Builder&lt;Chapter&gt; {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> id: String = <span style="color:#a6e22e">UUID</span>.randomUUID().toString()
@@ -310,6 +312,8 @@ data class Author( val id: String, val firstName: String, val lastName: String, 
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Chapter(id, number, title)
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typealias</span> ChapterDsl = Dsl&lt;ChapterBuilder&gt;
 </span></span></code></pre></div><p>Because <code>Author</code> and <code>Book</code> both have children components (<code>Book</code> and <code>Chapter</code>, respectively) I wanted a base component that handled the parent-child <code>Builder</code> interaction:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">abstract</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">BaseBuilderWithChildren</span>&lt;Parent, Child, ChildBuilder : Builder&lt;Child&gt;&gt;(
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">val</span> createChildBuilder: () <span style="color:#f92672">-&gt;</span> ChildBuilder,
@@ -317,10 +321,13 @@ data class Author( val id: String, val firstName: String, val lastName: String, 
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">val</span> children = mutableListOf&lt;Child&gt;()
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">child</span>(block: <span style="color:#a6e22e">ChildBuilder</span>.() <span style="color:#f92672">-&gt;</span> Unit) {
-</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">val</span> builder = createChildBuilder()
-</span></span><span style="display:flex;"><span>        builder.block()
-</span></span><span style="display:flex;"><span>        children.add(builder.build())
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">protected</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">child</span>(dsl: Dsl&lt;ChildBuilder&gt;) {
+</span></span><span style="display:flex;"><span>        children.add(
+</span></span><span style="display:flex;"><span>            createChildBuilder()
+</span></span><span style="display:flex;"><span>                .also(dsl)
+</span></span><span style="display:flex;"><span>                .build()
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>This base builder class requires the type of the parent (e.g. <code>Author</code>), the type of that type&rsquo;s child (e.g. <code>Book</code>) and the type of the child&rsquo;s <code>Builder</code> to facilitate the creation of the children objects via the <code>child</code> function. The <code>child</code> function could be part of the DSL, but I decided that I preferred explicit names such as <code>book</code> and <code>chapter</code> to define each object. As a result, the <code>AuthorBuilder</code> and <code>BookBuilder</code> classes must provide the name of the DSL function:</p>
@@ -328,34 +335,39 @@ data class Author( val id: String, val firstName: String, val lastName: String, 
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> id: String = <span style="color:#a6e22e">UUID</span>.randomUUID().toString()
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> title: String = <span style="color:#e6db74">&#34;&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> chapter = <span style="color:#f92672">::</span>child
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">chapter</span>(dsl: ChapterDsl) = child(dsl)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">build</span>(): Book {
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Book(id, title, children)
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typealias</span> BookDsl = Dsl&lt;BookBuilder&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AuthorBuilder</span> : BaseBuilderWithChildren&lt;Author, Book, BookBuilder&gt;({ BookBuilder() }) {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> id: String = <span style="color:#a6e22e">UUID</span>.randomUUID().toString()
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> firstName: String = <span style="color:#e6db74">&#34;&#34;</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">var</span> lastName: String = <span style="color:#e6db74">&#34;&#34;</span>
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> book = <span style="color:#f92672">::</span>child
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">book</span>(dsl: BookDsl) = child(dsl)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">build</span>(): Author {
 </span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> Author(id, firstName, lastName, children)
 </span></span><span style="display:flex;"><span>    }
 </span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typealias</span> AuthorDsl = Dsl&lt;AuthorBuilder&gt;
 </span></span></code></pre></div><p>Additionally, because the goal is to create a list of authors, I created an additional <code>Builder</code> for a list of authors alongside an entry-point function:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">AuthorListBuilder</span> : BaseBuilderWithChildren&lt;List&lt;Author&gt;, Author, AuthorBuilder&gt;({ AuthorBuilder() }) {
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> author = <span style="color:#f92672">::</span>child
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">override</span> <span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">build</span>(): List&lt;Author&gt; = children
 </span></span><span style="display:flex;"><span>}
 </span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">createAuthors</span>(block: <span style="color:#a6e22e">AuthorListBuilder</span>.() <span style="color:#f92672">-&gt;</span> Unit): List&lt;Author&gt; {
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> authorListBuilder = AuthorListBuilder()
-</span></span><span style="display:flex;"><span>    authorListBuilder.block()
-</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> authorListBuilder.build()
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">fun</span> <span style="color:#a6e22e">createAuthors</span>(dsl: Dsl&lt;AuthorListBuilder&gt;): List&lt;Author&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> AuthorListBuilder()
+</span></span><span style="display:flex;"><span>        .also(dsl)
+</span></span><span style="display:flex;"><span>        .build()
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><p>Altogether, these classes facilitate the following DSL:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-kotlin" data-lang="kotlin"><span style="display:flex;"><span>    <span style="color:#66d9ef">val</span> authors = createAuthors {
